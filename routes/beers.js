@@ -43,20 +43,37 @@ router.route('/beers/:beer_id')
 		});
 	})
 
+	// update the beer with this id (accessed at PUT http://localhost:8080/api/beers/:beer_id)
 	.put(function(req, res) {
 		Beer.findById(req.params.beer_id, function(err, beer) {
 			if (err)
 				res.send(err);
-
+			if (!beer)
+				res.json({message: 'No beer with that id found. Check yo label!'})
 			beer.name = req.body.name
 
 			beer.save(function(err) {
+				console.log(err);
 				if (err)
 					res.send(err)
 				res.json({message: 'Beer has been rebrewed!'})
 			})
 		})
 	})
+
+	// delete the beer with this id (accessed at DELETE http://localhost:8080/api/beers/:beer_id)
+	.delete(function(req, res) {
+		Beer.remove({
+			_id: req.params.beer_id
+		}, function(err, beer) {
+			if (err)
+				res.send(err)
+
+			res.json({message: 'Successfully deleted the beer.'})
+		})
+	})
+
+
 
 module.exports = router;
 
